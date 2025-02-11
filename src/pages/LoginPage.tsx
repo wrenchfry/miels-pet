@@ -4,14 +4,24 @@ const ValentineCard: React.FC = () => {
     const [showGif, setShowGif] = useState(false);  // Controls whether to show the Jinx GIF
     const [showSecondGif, setShowSecondGif] = useState(false);  // Controls whether to show the Love GIF
     const [cardVisible, setCardVisible] = useState(true);  // Controls whether the card is visible
+    const [showNoMessage, setShowNoMessage] = useState(false);  // Controls the "Oh no" message visibility
+    const [yesButtonSize, setYesButtonSize] = useState(1);  // Controls the size of the Yes button
+    const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });  // Controls No button's position
 
     const handleYesClick = () => {
         setCardVisible(false);  // Hide the card
         setShowGif(true);  // Show the Jinx GIF
+        setYesButtonSize(2);  // Make Yes button grow
         setTimeout(() => {
             setShowGif(false);  // Hide the Jinx GIF after 3 seconds
             setShowSecondGif(true);  // Show the Love GIF
         }, 3000);
+    };
+
+    const handleNoClick = () => {
+        setShowNoMessage(true);  // Show "Oh no" message
+        // Move the "No" button off-screen or shift its position
+        setNoButtonPosition({ x: 500, y: 0 });  // Example of moving it to the right
     };
 
     return (
@@ -24,14 +34,14 @@ const ValentineCard: React.FC = () => {
                             <p style={styles.question}>Benimle sevgililer günü olur musun?</p>
                             <div style={styles.buttonContainer}>
                                 <button
-                                    style={styles.yesButton}
+                                    style={{ ...styles.yesButton, transform: `scale(${yesButtonSize})` }}
                                     onClick={handleYesClick}
                                 >
                                     Evet
                                 </button>
                                 <button
-                                    style={styles.noButton}
-                                    onClick={() => alert("Oh no, maybe next time!")}
+                                    style={{ ...styles.noButton, left: `${noButtonPosition.x}px`, top: `${noButtonPosition.y}px` }}
+                                    onClick={handleNoClick}
                                 >
                                     Hayır
                                 </button>
@@ -43,6 +53,11 @@ const ValentineCard: React.FC = () => {
                     <div style={styles.gifContainer}>
                         {showGif && <img src="/jinx-ekko.gif" alt="Jinx Gif" style={styles.gifStyle} />}
                         {showSecondGif && <img src="/love.gif" alt="Love Gif" style={styles.secondGifStyle} />}
+                    </div>
+                )}
+                {showNoMessage && (
+                    <div style={styles.noMessage}>
+                        <p>Oh no, belki başka zaman!</p>
                     </div>
                 )}
             </div>
@@ -95,6 +110,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         display: 'flex',
         justifyContent: 'center',
         gap: '10px',
+        position: 'relative',
     },
     yesButton: {
         backgroundColor: '#A8D1FF',
@@ -104,6 +120,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#fff',
         fontSize: '1.2rem',
         cursor: 'pointer',
+        transition: 'transform 0.3s ease-in-out',  // Smooth scaling transition
     },
     noButton: {
         backgroundColor: '#FFB6C1',
@@ -113,6 +130,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#fff',
         fontSize: '1.2rem',
         cursor: 'pointer',
+        position: 'absolute',  // Ensures the "No" button moves around
+        transition: 'left 0.3s ease, top 0.3s ease',  // Smooth transition for button movement
     },
     gifContainer: {
         display: 'flex',
@@ -133,6 +152,12 @@ const styles: { [key: string]: React.CSSProperties } = {
         maxWidth: '80%',  // Ensure the second GIF is sized properly
         maxHeight: '80%',
         objectFit: 'contain',  // Maintain the aspect ratio of the second GIF
+    },
+    noMessage: {
+        marginTop: '20px',
+        color: '#FF6347',
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
     },
 };
 
