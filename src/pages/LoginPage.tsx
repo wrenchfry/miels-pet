@@ -61,6 +61,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     cardInner: {
         width: '700px',
         height: '400px',
+        position: 'relative',  // Needed to make sure GIFs overlay properly
     },
     cardFront: {
         width: '100%',
