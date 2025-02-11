@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 
 const ValentineCard: React.FC = () => {
     const [showGif, setShowGif] = useState(false);  // Controls whether to show the Jinx GIF
@@ -43,7 +42,7 @@ const ValentineCard: React.FC = () => {
                     // Show GIFs after card is removed
                     <div style={styles.gifContainer}>
                         {showGif && <img src="/jinx-ekko.gif" alt="Jinx Gif" style={styles.gifStyle} />}
-                        {showSecondGif && <img src="/love.gif" alt="Love Gif" style={styles.gifStyle} />}
+                        {showSecondGif && <img src="/love.gif" alt="Love Gif" style={styles.secondGifStyle} />}
                     </div>
                 )}
             </div>
@@ -116,17 +115,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     gifContainer: {
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'center',  // Centers horizontally
+        alignItems: 'center',  // Centers vertically
         width: '100%',
         height: '100%',
         position: 'absolute',  // Ensure GIFs overlay the card without being transformed
+        top: '0',  // Ensure it is aligned at the top of the container
+        left: '0',  // Align to the left as well
     },
     gifStyle: {
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover', // Ensures the GIF covers the entire container
-        transform: 'none',  // Make sure no transformation like mirroring is applied
+        maxWidth: '80%',  // Ensure GIF is sized appropriately
+        maxHeight: '80%',
+        objectFit: 'contain',  // Keep the aspect ratio intact
+    },
+    secondGifStyle: {
+        maxWidth: '80%',  // Ensure the second GIF is sized properly
+        maxHeight: '80%',
+        objectFit: 'contain',  // Maintain the aspect ratio of the second GIF
     },
 };
 
