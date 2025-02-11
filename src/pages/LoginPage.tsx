@@ -5,14 +5,13 @@ const ValentineCard: React.FC = () => {
     const [showGif, setShowGif] = useState(false);  // Controls whether to show the Jinx GIF
     const [showSecondGif, setShowSecondGif] = useState(false);  // Controls whether to show the Love GIF
     const [cardVisible, setCardVisible] = useState(true);  // Controls whether the card is visible
-    const [showJinxGif, setShowJinxGif] = useState(true);  // Controls whether the Jinx GIF is visible
 
     const handleYesClick = () => {
         setCardVisible(false);  // Hide the card
         setShowGif(true);  // Show the Jinx GIF
         setTimeout(() => {
-            setShowJinxGif(false);  // Hide the Jinx GIF
-            setShowSecondGif(true);  // Show the Love GIF after 3 seconds
+            setShowGif(false);  // Hide the Jinx GIF after 3 seconds
+            setShowSecondGif(true);  // Show the Love GIF
         }, 3000);
     };
 
@@ -45,9 +44,9 @@ const ValentineCard: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    // Show Jinx GIF after card is removed
+                    // Show GIFs after card is removed
                     <div style={styles.gifContainer}>
-                        {showJinxGif && <img src="/jinx.gif" alt="Jinx Gif" style={styles.gifStyle} />}
+                        {showGif && <img src="/jinx-ekko.gif" alt="Jinx Gif" style={styles.gifStyle} />}
                         {showSecondGif && <img src="/love.gif" alt="Love Gif" style={styles.gifStyle} />}
                     </div>
                 )}
@@ -130,11 +129,13 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: 'center',
         width: '100%',
         height: '100%',
+        position: 'absolute',  // Ensure GIFs overlay the card without being transformed
     },
     gifStyle: {
         width: '100%',
         height: '100%',
         objectFit: 'cover', // Ensures the GIF covers the entire container
+        transform: 'none',  // Make sure no transformation like mirroring is applied
     },
 };
 
