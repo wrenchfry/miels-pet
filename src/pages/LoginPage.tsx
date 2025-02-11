@@ -4,24 +4,64 @@ const ValentineCard: React.FC = () => {
     const [showGif, setShowGif] = useState(false);  // Controls whether to show the Jinx GIF
     const [showSecondGif, setShowSecondGif] = useState(false);  // Controls whether to show the Love GIF
     const [cardVisible, setCardVisible] = useState(true);  // Controls whether the card is visible
-    const [showNoMessage, setShowNoMessage] = useState(false);  // Controls the "Oh no" message visibility
-    const [yesButtonSize, setYesButtonSize] = useState(1);  // Controls the size of the Yes button
-    const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });  // Controls No button's position
+    const [noMessage, setNoMessage] = useState("Oh no, belki başka zaman!");  // Message when "No" is clicked
+    const [noButtonClicked, setNoButtonClicked] = useState(false);  // Controls if the "No" button has been clicked
+    const [noButtonStyle, setNoButtonStyle] = useState<React.CSSProperties>({
+        fontSize: 20,
+        position: 'absolute',  // Fixed initial position
+        top: '60%',  // Fixed position from top
+        left: '30%',  // Fixed position from left
+    });
+    const [yesButtonStyle, setYesButtonStyle] = useState({
+        fontSize: 20,
+    });
+
+    const messages = [
+        "Biliyorsun, eğer evet dersen havuçlu kekimi paylaşırım… 😉",
+        "Reddedildim mi? Tamam, ama evet dersen havuçlu kekin son parçasını sana veririm.",
+        "Kalp kırıklığını havuçlu kekle düzeltebiliriz… ama onunla paylaşabilmem için evet demen gerek!",
+        "Beni bu havuçlu kekle yalnız bırakma… evet de, paylaşalım!",
+        "Tamam, reddedildim… ama havuçlu kekim harika, evet dersen seninle paylaşırım.",
+        "Ağlamayı bırakırım, ama sadece evet dersen ve havuçlu kekimi seninle paylaşırım.",
+        "Tamam, reddedildim… ama havuçlu kekim hâlâ masada, seni bekliyor!",
+        "Biliyorum, biliyorum… ama hayal et: havuçlu kek, Netflix ve senin ‘evet’ demen?",
+        "Henüz bitmedi… sen evet dersen, havuçlu kekimi paylaşırım!",
+        "Tamam, ama başka kimse havuçlu kekimi almaz, evet de… Sadece söylüyorum.",
+        "Ah, hayır… Ask çok üzülür, ona acı verir! Hayır demek kolay mı?"
+    ];
 
     const handleYesClick = () => {
         setCardVisible(false);  // Hide the card
         setShowGif(true);  // Show the Jinx GIF
-        setYesButtonSize(2);  // Make Yes button grow
         setTimeout(() => {
             setShowGif(false);  // Hide the Jinx GIF after 3 seconds
             setShowSecondGif(true);  // Show the Love GIF
         }, 3000);
+        setNoMessage("");  // Clear the "No" message when "Yes" is clicked
     };
 
     const handleNoClick = () => {
-        setShowNoMessage(true);  // Show "Oh no" message
-        // Move the "No" button off-screen or shift its position
-        setNoButtonPosition({ x: 500, y: 0 });  // Example of moving it to the right
+        // Only change button styles once when "No" is clicked
+        if (!noButtonClicked) {
+            setNoButtonStyle(prev => {
+                const fontSize = typeof prev.fontSize === 'number' ? prev.fontSize : 20;
+                return {
+                    fontSize: fontSize + 5,  // Increase font size
+                    position: 'absolute',
+                    top: `${Math.random() * 400}px`,  // Random vertical position
+                    left: `${Math.random() * 700}px`,  // Random horizontal position
+                };
+            });
+
+            // Update Yes button size
+            setYesButtonStyle(prev => ({
+                fontSize: prev.fontSize * 2,  // Double the font size
+            }));
+
+            // Set "No" message and trigger style updates
+            setNoButtonClicked(true);
+            setNoMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
     };
 
     return (
@@ -34,13 +74,13 @@ const ValentineCard: React.FC = () => {
                             <p style={styles.question}>Benimle sevgililer günü olur musun?</p>
                             <div style={styles.buttonContainer}>
                                 <button
-                                    style={{ ...styles.yesButton, transform: `scale(${yesButtonSize})` }}
+                                    style={{ ...styles.yesButton, ...yesButtonStyle }}
                                     onClick={handleYesClick}
                                 >
                                     Evet
                                 </button>
                                 <button
-                                    style={{ ...styles.noButton, left: `${noButtonPosition.x}px`, top: `${noButtonPosition.y}px` }}
+                                    style={{ ...styles.noButton, ...noButtonStyle }}
                                     onClick={handleNoClick}
                                 >
                                     Hayır
@@ -51,13 +91,13 @@ const ValentineCard: React.FC = () => {
                 ) : (
                     // Show GIFs after card is removed
                     <div style={styles.gifContainer}>
-                        {showGif && <img src="/jinx-ekko.gif" alt="Jinx Gif" style={styles.gifStyle} />}
+                        {showGif && <img src="/jinx-ekko.gif" alt="Jinx Gif" style={styles.gifStyle}/>}
                         {showSecondGif && <img src="/love.gif" alt="Love Gif" style={styles.secondGifStyle} />}
                     </div>
                 )}
-                {showNoMessage && (
-                    <div style={styles.noMessage}>
-                        <p>Oh no, belki başka zaman!</p>
+                {noButtonClicked && (
+                    <div style={styles.noMessageContainer}>
+                        <p style={styles.noMessage}>{noMessage}</p>
                     </div>
                 )}
             </div>
@@ -108,9 +148,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     buttonContainer: {
         display: 'flex',
-        justifyContent: 'center',
-        gap: '10px',
-        position: 'relative',
+        justifyContent: 'center',  // Center the buttons within the container
+        width: '50%',
+        position: 'relative',  // Needed for absolute positioning of "No" button
     },
     yesButton: {
         backgroundColor: '#A8D1FF',
@@ -120,7 +160,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#fff',
         fontSize: '1.2rem',
         cursor: 'pointer',
-        transition: 'transform 0.3s ease-in-out',  // Smooth scaling transition
     },
     noButton: {
         backgroundColor: '#FFB6C1',
@@ -130,35 +169,40 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#fff',
         fontSize: '1.2rem',
         cursor: 'pointer',
-        position: 'absolute',  // Ensures the "No" button moves around
-        transition: 'left 0.3s ease, top 0.3s ease',  // Smooth transition for button movement
+         // Position "No" button absolutely relative to "Yes"
+        left: '-120px',  // Move it to the left of the "Yes" button
     },
     gifContainer: {
         display: 'flex',
-        justifyContent: 'center',  // Centers horizontally
-        alignItems: 'center',  // Centers vertically
+        justifyContent: 'center',
+        alignItems: 'center',
         width: '100%',
         height: '100%',
-        position: 'absolute',  // Ensure GIFs overlay the card without being transformed
-        top: '0',  // Ensure it is aligned at the top of the container
-        left: '0',  // Align to the left as well
+        position: 'absolute',
+        top: '0',
+        left: '0',
     },
     gifStyle: {
-        maxWidth: '80%',  // Ensure GIF is sized appropriately
+        maxWidth: '80%',
         maxHeight: '80%',
-        objectFit: 'contain',  // Keep the aspect ratio intact
+        objectFit: 'contain',
     },
     secondGifStyle: {
-        maxWidth: '80%',  // Ensure the second GIF is sized properly
+        maxWidth: '80%',
         maxHeight: '80%',
-        objectFit: 'contain',  // Maintain the aspect ratio of the second GIF
+        objectFit: 'contain',
+    },
+    noMessageContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '20px',
     },
     noMessage: {
-        marginTop: '20px',
-        color: '#FF6347',
         fontSize: '1.5rem',
+        color: '#FFB6C1',
         fontWeight: 'bold',
-    },
+    }
 };
 
 export default ValentineCard;
