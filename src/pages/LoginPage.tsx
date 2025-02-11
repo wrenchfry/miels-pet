@@ -16,11 +16,7 @@ const ValentineCard: React.FC = () => {
     };
 
     return (
-        <motion.div
-            style={styles.cardContainer as React.CSSProperties}
-            animate={{ rotateY: cardVisible ? 0 : 180 }}  // Card flip animation
-            transition={{ duration: 1 }}
-        >
+        <div style={styles.cardContainer}>
             <div style={styles.cardInner}>
                 {cardVisible ? (
                     <div style={styles.cardFront}>
@@ -51,13 +47,12 @@ const ValentineCard: React.FC = () => {
                     </div>
                 )}
             </div>
-        </motion.div>
+        </div>
     );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
     cardContainer: {
-        perspective: '1000px',
         width: '100vw',
         height: '100vh',
         display: 'flex',
@@ -67,11 +62,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     cardInner: {
         width: '700px',
         height: '400px',
-        transformStyle: 'preserve-3d',
-        transition: 'transform 1s',
     },
     cardFront: {
-        position: 'absolute',
         width: '100%',
         height: '100%',
         backgroundColor: '#B3D9FF',
@@ -80,7 +72,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backfaceVisibility: 'hidden',
     },
     title: {
         color: '#F0F8FF',
