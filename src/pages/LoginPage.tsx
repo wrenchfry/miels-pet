@@ -6,13 +6,10 @@ const ValentineCard: React.FC = () => {
     const [cardVisible, setCardVisible] = useState(true);  // Controls whether the card is visible
     const [noMessage, setNoMessage] = useState("Oh no, belki başka zaman!");  // Message when "No" is clicked
     const [noButtonClicked, setNoButtonClicked] = useState(false);  // Controls if the "No" button has been clicked
-    const [noButtonStyle, setNoButtonStyle] = useState<React.CSSProperties>({
-        fontSize: 20,
-        position: 'absolute',  // Fixed initial position
-        top: '60%',  // Fixed position from top
-        left: '30%',  // Fixed position from left
-    });
     const [yesButtonStyle, setYesButtonStyle] = useState({
+        fontSize: 20,
+    });
+    const [noButtonStyle, setNoButtonStyle] = useState<React.CSSProperties>({
         fontSize: 20,
     });
 
@@ -39,43 +36,25 @@ const ValentineCard: React.FC = () => {
         }, 3000);
         setNoMessage("");  // Clear the "No" message when "Yes" is clicked
 
-        // Immediately increase the "Yes" button size when clicked
+        // Immediately increase the "Yes" button size every time it's clicked
         setYesButtonStyle(prev => ({
-            fontSize: prev.fontSize * 2,  // Double the font size immediately
+            fontSize: prev.fontSize + 5,  // Increase the font size each time
         }));
     };
-
+    const [messageIndex, setMessageIndex] = useState(0);
     const handleNoClick = () => {
-        // Reset state if button was already clicked
-        if (noButtonClicked) {
-            setNoButtonStyle({
-                fontSize: 20,
-                position: 'absolute', // Reset position
-                top: '60%',
-                left: '30%',
-            });
-            setNoButtonClicked(false);  // Reset clicked state
-        } else {
-            // Only change button styles the first time "No" is clicked
-            setNoButtonStyle(prev => {
-                const fontSize = typeof prev.fontSize === 'number' ? prev.fontSize : 20;
-                return {
-                    fontSize: fontSize + 5,  // Increase font size
-                    position: 'absolute',
-                    top: `${Math.random() * 200}px`,  // Random vertical position
-                    left: `${Math.random() * 350}px`,  // Random horizontal position
-                };
-            });
+        setNoButtonStyle({
+            position: 'absolute',
+            top: `${Math.random() * 200}px`,
+            left: `${Math.random() * 350}px`,
+        });
 
-            // Update Yes button size immediately
-            setYesButtonStyle(prev => ({
-                fontSize: prev.fontSize * 2,  // Double the font size
-            }));
+        setNoMessage(messages[messageIndex]); // Show next message
+        setMessageIndex((prev) => (prev + 1) % messages.length); // Loop through messages
 
-            // Set "No" message and trigger style updates
-            setNoButtonClicked(true);
-            setNoMessage(messages[Math.floor(Math.random() * messages.length)]);
-        }
+        setYesButtonStyle((prev) => ({
+            fontSize: prev.fontSize * 2, // Yes button grows
+        }));
     };
 
     return (
@@ -163,7 +142,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     buttonContainer: {
         display: 'flex',
         justifyContent: 'center',  // Center the buttons within the container
+        alignItems: 'center',  // Align buttons vertically as well
         width: '50%',
+        gap: '10px',  // Adds a gap between the "Yes" and "No" buttons
         position: 'relative',  // Needed for absolute positioning of "No" button
     },
     yesButton: {
@@ -183,8 +164,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#fff',
         fontSize: '1.2rem',
         cursor: 'pointer',
-        // Position "No" button absolutely relative to "Yes"
-        left: '-120px',  // Move it to the left of the "Yes" button
     },
     gifContainer: {
         display: 'flex',
