@@ -38,22 +38,36 @@ const ValentineCard: React.FC = () => {
             setShowSecondGif(true);  // Show the Love GIF
         }, 3000);
         setNoMessage("");  // Clear the "No" message when "Yes" is clicked
+
+        // Immediately increase the "Yes" button size when clicked
+        setYesButtonStyle(prev => ({
+            fontSize: prev.fontSize * 2,  // Double the font size immediately
+        }));
     };
 
     const handleNoClick = () => {
-        // Only change button styles once when "No" is clicked
-        if (!noButtonClicked) {
+        // Reset state if button was already clicked
+        if (noButtonClicked) {
+            setNoButtonStyle({
+                fontSize: 20,
+                position: 'absolute', // Reset position
+                top: '60%',
+                left: '30%',
+            });
+            setNoButtonClicked(false);  // Reset clicked state
+        } else {
+            // Only change button styles the first time "No" is clicked
             setNoButtonStyle(prev => {
                 const fontSize = typeof prev.fontSize === 'number' ? prev.fontSize : 20;
                 return {
                     fontSize: fontSize + 5,  // Increase font size
                     position: 'absolute',
-                    top: `${Math.random() * 400}px`,  // Random vertical position
-                    left: `${Math.random() * 700}px`,  // Random horizontal position
+                    top: `${Math.random() * 200}px`,  // Random vertical position
+                    left: `${Math.random() * 350}px`,  // Random horizontal position
                 };
             });
 
-            // Update Yes button size
+            // Update Yes button size immediately
             setYesButtonStyle(prev => ({
                 fontSize: prev.fontSize * 2,  // Double the font size
             }));
@@ -169,7 +183,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#fff',
         fontSize: '1.2rem',
         cursor: 'pointer',
-         // Position "No" button absolutely relative to "Yes"
+        // Position "No" button absolutely relative to "Yes"
         left: '-120px',  // Move it to the left of the "Yes" button
     },
     gifContainer: {
